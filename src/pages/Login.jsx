@@ -1,8 +1,36 @@
 import React from "react";
 import bg from "../assets/login-bg.svg";
 import Button from "../utilities/Button";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLoginMutation } from "../context/api/contactApi";
+import { useFormik } from "formik";
+import { useDispatch } from "react-redux";
+import { addUser } from "../context/services/authSlice";
 const Login = () => {
+  // const location = useLocation();
+  // const name = location?.state?.name;
+  // const password = location?.state?.password;
+  const nav = useNavigate();
+
+  const [login] = useLoginMutation();
+  const dispatch = useDispatch();
+  // console.log(location);
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+
+    onSubmit: async (values) => {
+      const { data } = await login(values);
+      console.log(data);
+      if (data?.success) {
+        dispatch(addUser({ user: data?.user, token: data?.token }));
+        nav("/");
+      }
+    },
+  });
   return (
     <div
       className="w-full min-h-screen flex justify-center items-center bg-cover bg-no-repeat"
@@ -17,14 +45,19 @@ const Login = () => {
           </h1>
           <h2 className=" text-lg">Login to your account</h2>
         </div>
-        <div className=" flex flex-col gap-3 w-full">
+        <form
+          onSubmit={formik.handleSubmit}
+          className=" flex flex-col gap-3 w-full"
+        >
           <div>
-            <label htmlFor="username" className=" block">
-              Name
+            <label htmlFor="email" className=" block">
+              Email
             </label>
             <input
               type="text"
-              id="username"
+              id="email"
+              value={formik.values.email}
+              onChange={formik.handleChange}
               className=" w-full py-2 pl-3 outline-none rounded border-2 border-dark focus:border-primary"
             />
           </div>
@@ -35,6 +68,8 @@ const Login = () => {
             <input
               type="password"
               id="password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
               className=" w-full py-2 pl-3 outline-none rounded border-2 border-dark focus:border-primary"
             />
             <p className="inline-block mt-2 underline font-light text-sm text-gray-700 tracking-wide cursor-pointer hover:font-medium">
@@ -42,7 +77,7 @@ const Login = () => {
             </p>
           </div>
           <Button text={"Login"} />
-        </div>
+        </form>
         <div>
           <p className=" font-light">
             Don't have an account?{" "}
