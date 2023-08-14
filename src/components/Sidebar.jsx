@@ -4,12 +4,11 @@ import { FiHome } from "react-icons/fi";
 import { ImExit } from "react-icons/im";
 import { IoIosContacts, IoIosCreate } from "react-icons/io";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import Button from "../utilities/Button";
 import { useDispatch } from "react-redux";
 import { removeUser } from "../context/services/authSlice";
 import { Toaster, toast } from "react-hot-toast";
 
-const Sidebar = () => {
+const SideBar = () => {
   const nav = useNavigate();
   const dispatch = useDispatch();
 
@@ -61,4 +60,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default SideBar;
