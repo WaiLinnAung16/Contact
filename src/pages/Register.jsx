@@ -1,19 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import bg from "../assets/login-bg.svg";
 import Button from "../utilities/Button";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { useRegisterMutation } from "../context/api/contactApi";
 import { Toaster, toast } from "react-hot-toast";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import ShowPassword from "../utilities/ShowPassword";
 const Register = () => {
   const [register] = useRegisterMutation();
   const nav = useNavigate();
-  const [watch, setWatch] = useState(false);
-
-  const handleWatch = () => {
-    setWatch((pre) => !pre);
-  };
 
   const validate = (values) => {
     const errors = {};
@@ -51,14 +46,14 @@ const Register = () => {
     validate,
     onSubmit: async (values) => {
       const datas = await register(values);
-      console.log(datas);
+      // console.log(datas);
       if (datas?.data?.success) {
         const successMsg = datas?.data?.message;
-        toast.success(successMsg);
+        toast.success(`${successMsg}🤩`);
         setTimeout(() => {
           nav("/login", {
             state: {
-              name: formik.values.name,
+              email: formik.values.email,
               password: formik.values.password,
             },
           });
@@ -84,7 +79,7 @@ const Register = () => {
       }}
     >
       <Toaster position="bottom-center" reverseOrder={false} />
-      <div className="w-full md:w-[500px] p-8 mx-3 bg-white backdrop-blur-md bg-opacity-90 shadow-md rounded-md flex gap-5 flex-col">
+      <div className="w-full md:w-[500px] p-8 mx-3 bg-[#fafafa] backdrop-blur-md bg-opacity-90 shadow-md rounded-md flex gap-5 flex-col">
         <div>
           <h1 className=" font-serif font-black text-3xl text-primary">
             Create Account
@@ -93,7 +88,7 @@ const Register = () => {
         </div>
         <form
           onSubmit={formik.handleSubmit}
-          className=" flex flex-col gap-3 w-full"
+          className=" flex flex-col gap-4 w-full select-none"
         >
           <div>
             <label htmlFor="name" className=" block">
@@ -133,26 +128,10 @@ const Register = () => {
             <label htmlFor="password" className=" block">
               Password
             </label>
-            <div className="relative">
-              <input
-                type={watch ? "text" : "password"}
-                id="password"
-                onChange={formik.handleChange}
-                value={formik.values.password}
-                className=" w-full py-2 pl-3 outline-none rounded border-2 border-dark focus:border-primary"
-              />
-              {watch ? (
-                <AiOutlineEyeInvisible
-                  onClick={handleWatch}
-                  className=" absolute right-3 top-2 w-7 h-7 cursor-pointer rounded-full p-1 hover:bg-gray-200"
-                />
-              ) : (
-                <AiOutlineEye
-                  onClick={handleWatch}
-                  className=" absolute right-3 top-2 w-7 h-7 cursor-pointer rounded-full p-1 hover:bg-gray-200"
-                />
-              )}
-            </div>
+            <ShowPassword
+              value={formik.values.password}
+              onChange={formik.handleChange}
+            />
             {formik.errors.password ? (
               <span className=" text-red-500 text-xs before:content-['*'] before:mr-1">
                 {formik.errors.password}
@@ -163,26 +142,12 @@ const Register = () => {
             <label htmlFor="password_confirmation" className=" block">
               Confirm Password
             </label>
-            <div className="relative">
-              <input
-                type={watch ? "text" : "password"}
-                id="password_confirmation"
-                onChange={formik.handleChange}
-                value={formik.values.password_confirmation}
-                className=" w-full py-2 pl-3 outline-none rounded border-2 border-dark focus:border-primary"
-              />
-              {watch ? (
-                <AiOutlineEyeInvisible
-                  onClick={handleWatch}
-                  className=" absolute right-3 top-2 w-7 h-7 cursor-pointer rounded-full p-1 hover:bg-gray-200"
-                />
-              ) : (
-                <AiOutlineEye
-                  onClick={handleWatch}
-                  className=" absolute right-3 top-2 w-7 h-7 cursor-pointer rounded-full p-1 hover:bg-gray-200"
-                />
-              )}
-            </div>
+
+            <ShowPassword
+              value={formik.values.password_confirmation}
+              onChange={formik.handleChange}
+              id="password_confirmation"
+            />
           </div>
           <Button text={"Sign up"} />
         </form>

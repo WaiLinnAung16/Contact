@@ -3,9 +3,9 @@ import Path from "./routes/Path";
 
 const App = () => {
   return (
-    <div>
+    <main>
       <Path />
-    </div>
+    </main>
   );
 };
 
